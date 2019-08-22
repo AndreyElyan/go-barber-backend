@@ -1,11 +1,12 @@
 import Sequelize from 'sequelize';
 import mongoose from 'mongoose';
-import User from '../app/models/users';
-import File from '../app/models/files';
+import User from '../app/models/User';
+import File from '../app/models/File';
 import Appointment from '../app/models/Appointment';
+
 import databaseConfig from '../config/database';
 
-const models = [User, File, Appointment];
+const models = [User, File, Appointment]; // all models mapped here
 
 class Database {
   constructor() {
@@ -15,17 +16,17 @@ class Database {
 
   init() {
     this.connection = new Sequelize(databaseConfig);
-
-    models
-      .map(model => model.init(this.connection))
-      .map(model => model.associate && model.associate(this.connection.models));
+    models.map(model => model.init(this.connection)); // map all models and set the connection
+    models.map(
+      model => model.associate && model.associate(this.connection.models) // map all relationships
+    );
   }
 
   mongo() {
-    this.mongoConnection = mongoose.connect(
-      'mongodb://localhost:27017/gobarber',
-      { useNewUrlParser: true, useFindAndModify: true }
-    );
+    this.mongoConnection = mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useFindAndModify: true,
+    });
   }
 }
 

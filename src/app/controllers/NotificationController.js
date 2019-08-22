@@ -1,19 +1,16 @@
-import Notification from '../schemas/notification';
-import User from '../models/users';
+import User from '../models/User';
+import Notification from '../schemas/Notification';
 
 class NotificationController {
   async index(req, res) {
-    const isProvider = await User.findOne({
-      where: {
-        id: req.userId,
-        provider: true,
-      },
+    const checkIsProvider = await User.findOne({
+      where: { id: req.userId, provider: true },
     });
 
-    if (!isProvider) {
-      res.status(401).json({
-        error: 'Only provider can load notifications',
-      });
+    if (!checkIsProvider) {
+      return res
+        .status(401)
+        .json({ error: 'Only provider can load notifications' });
     }
 
     const notifications = await Notification.find({
@@ -21,18 +18,17 @@ class NotificationController {
     })
       .sort({ createdAt: 'desc' })
       .limit(20);
-
     return res.json(notifications);
   }
 
   async update(req, res) {
-    const notification = await Notification.findByIdAndUpdate(
+    // Get notifications e update at the same time
+    const notifications = await Notification.findByIdAndUpdate(
       req.params.id,
       { read: true },
       { new: true }
     );
-
-    return res.json(notification);
+    return res.json(notifications);
   }
 }
 

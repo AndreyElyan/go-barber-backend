@@ -15,26 +15,20 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        OnDelete: 'SET NULL',
         allowNull: true,
       },
       provider_id: {
         type: Sequelize.INTEGER,
         references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        OnDelete: 'SET NULL',
         allowNull: true,
       },
-      canceled_at: {
+      cancelled_at: {
         type: Sequelize.DATE,
-        allowNull: true,
       },
-      path: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      creted_at: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
       },

@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import { resolve } from 'path';
-import exphbs from 'express-handlebars';
 import nodemailerhbs from 'nodemailer-express-handlebars';
+import exphbs from 'express-handlebars';
 import mailConfig from '../config/mail';
 
 class Mail {
@@ -14,13 +14,18 @@ class Mail {
       secure,
       auth: auth.user ? auth : null,
     });
-
-    this.configureTemplates();
+    this.configureTemplate();
   }
 
-  configureTemplates() {
-    const viewPath = resolve(__dirname('..', 'app', 'views', 'emails'));
+  sendMail(message) {
+    this.transporter.sendMail({
+      ...mailConfig.default,
+      ...message,
+    });
+  }
 
+  configureTemplate() {
+    const viewPath = resolve(__dirname, '..', 'app', 'views', 'emails');
     this.transporter.use(
       'compile',
       nodemailerhbs({
@@ -35,13 +40,5 @@ class Mail {
       })
     );
   }
-
-  sendMail(message) {
-    return this.transporter.sendMail({
-      ...mailConfig.default,
-      ...message,
-    });
-  }
 }
-
 export default new Mail();
